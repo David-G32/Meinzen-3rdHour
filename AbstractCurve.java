@@ -1,8 +1,8 @@
-package Abstract;
+package abstractPackage;
 
 import java.util.ArrayList;
 
-import marketSim.Point;
+import economicsSimulation.Point;
 
 abstract class AbstractCurve implements CurveInterface
 {
@@ -10,25 +10,25 @@ abstract class AbstractCurve implements CurveInterface
 	
 	
 	public AbstractCurve(Point p1, Point p2, int numPoints) {
-		int maxPoints = 1+Math.abs((p2.getQuant()-p1.getQuant()));
+		int maxPoints = 1+Math.abs((p2.getQuantity()-p1.getQuantity()));
 		
 		// This is a formula that tells if numPoints can fit cleanly between p1 and p2
 		if (numPoints > 1 && (maxPoints-numPoints)%(numPoints-1) == 0) {
 			newCurve = new ArrayList<Point>(numPoints);
 			
 			Point leftmostPoint;
-			if (p1.getQuant() < p2.getQuant()) {
+			if (p1.getQuantity() < p2.getQuantity()) {
 				leftmostPoint = p1;
 			} else {
 				leftmostPoint = p2;
 			}
 			
-			int    startQuant = leftmostPoint.getQuant();
+			int    startQuant = leftmostPoint.getQuantity();
 			double startPrice = leftmostPoint.getPrice();
 			
 			int    jumpBy     = (maxPoints-1) / (numPoints-1);
 			double priceDelta = 
-				(p1.getPrice()-p2.getPrice()) / (p1.getQuant()-p2.getQuant());
+				(p1.getPrice()-p2.getPrice()) / (p1.getQuantity()-p2.getQuantity());
 			
 			for (int i=0; i<numPoints; i++) {
 				newCurve.add(
@@ -44,45 +44,20 @@ abstract class AbstractCurve implements CurveInterface
 	}
 	public boolean add(Point aP) {
 		// if aP has the same quantity as another point, don't add it
-		if (!searchForSameQuantity(aP.getQuant())) {
+		if (!searchForSameQuantity(aP.getQuantity())) {
 			newCurve.add(aP);
-			sort();
+			sortByQuantity();
 			return true;
 		}
 		return false;
 	}
 	private boolean searchForSameQuantity(int quant) {
 		for (Point p: newCurve) {
-			if (p.getQuant() == quant) {
+			if (p.getQuantity() == quant) {
 				return true;
 			}
 		}
 		return false;
-	}
-	
-	abstract void sort();
-	
-	public void sortPrice() {
-		for (int numChecks=newCurve.size()-1; numChecks>0; numChecks--) {
-			for (int i=0; i<numChecks; i++) {
-				if (newCurve.get(i).getPrice() > newCurve.get(i).getPrice()) {
-					Point temp = newCurve.get(i);
-					newCurve.set(i, newCurve.get(i+1));
-					newCurve.set(i+1, temp);
-				}
-			}
-		}
-	}
-	public void sortQuantity() {
-		for (int numChecks=newCurve.size()-1; numChecks>0; numChecks--) {
-			for (int i=0; i<numChecks; i++) {
-				if (newCurve.get(i).getQuant() > newCurve.get(i).getQuant()) {
-					Point temp = newCurve.get(i);
-					newCurve.set(i, newCurve.get(i+1));
-					newCurve.set(i+1, temp);
-				}
-			}
-		}
 	}
 	
 	public String toString() {
@@ -97,15 +72,32 @@ abstract class AbstractCurve implements CurveInterface
 		temp += "]";
 		return temp;
 	}
-	public boolean remove(Point p) {
+	public boolean delete(Point p) {
 		boolean didRemove = newCurve.remove(p);
 		
 		// Trims the list to the size of the new list
 		newCurve.trimToSize();
 		return didRemove;
 	}
-	public boolean contains(Point op) {
+	public boolean search(Point op) {
 		return newCurve.contains(op);
 	}
 	
+	abstract void sort();
+	
+	public void sortHelper() {
+		sortByQuantity();
+	}
+	
+	private void sortByQuantity() {
+		for (int numChecks=newCurve.size()-1; numChecks>0; numChecks--) {
+			for (int i=0; i<numChecks; i++) {
+				if (newCurve.get(i).getQuantity() > newCurve.get(i).getQuantity()) {
+					Point temp = newCurve.get(i);
+					newCurve.set(i, newCurve.get(i+1));
+					newCurve.set(i+1, temp);
+				}
+			}
+		}
+	}
 }
