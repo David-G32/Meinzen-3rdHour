@@ -1,96 +1,50 @@
-package Abstract;
+package marketProject;
 
-public class Point {
-private double price;
-private int    quant;
-private final double TOLORANCE = 0.01;
 /**
- * default construction of a point
+ * @author Christopher Meyer
+ * @class  AP Computer Science A
+ * @hour   3rd
+ * @date   8/18/2023
  */
-public Point()
-{
-	price = 0.0;
-	quant = 0;
-}
-/**
- * point constructed with parameters to create a specific point
- * @param q
- * @param p
- */
-public Point(int q, double p)
-{
-	price = p;
-	quant = q;
-}
-public String toString()
-{
-	String s = "("+this.getQuant()+","+this.getPrice()+")";
-	return s;
-}
-/**
- * get quantity
- * @return
- */
-public int getQuant()
-{
-	return quant;
-}
-/**
- * get Price
- * @return
- */
-public double getPrice()
-{
-	return price;
-}
-/**
- * set price
- * @param p
- */
-public void setPrice(double p)
-{
-	price = p;
-}
-/**
- * set quantity
- * @param q
- */
-public void setQuant(int q)
-{
-	quant = q;
-}
-/**
- * checks if an object is a point and if so directs it to equals(point a)
- * Overrides Object.equals()
- */
-public boolean equals(Object o)
-{
-	if(o instanceof Point)
-	{
-		Point p = (Point) o;
-		return equals(p);
+
+public class Point extends Object{
+
+	private double price;
+	private int quantity;
+	private final double TOLERANCE = 0.01; // each point defaults to a 1 penny tolerance for equality
+
+	public Point(double p, int q) {
+		price = p;
+		quantity = q;
 	}
-	return false;
-}
-/**
- * compares two points and returns a boolean regarding their relation and accounts for a rounding tolerance
- * true = equal, false != equal
- * overloads Object.equals()
- * @param a
- * @return
- */
-public boolean equals(Point a)
-{
-	if ((Math.abs(this.getPrice() - a.getPrice()) <= TOLORANCE) && (this.getQuant() == a.getQuant()))
-	{
-		return true;
-		
-	}
-	return false;
 	
+	public double getPrice() {
+		return price;
+	}
+	
+	public int getQuantity() {
+		return quantity;
+	}
+	
+	public String toString() {
+		return "("+quantity+", "+price+")";
+	}
+	
+	public boolean equals(Object other) {
+		return(this == other);
+	}
+	
+	public boolean equals(Point otherPoint) {
+		
+		if((Math.abs(this.price - otherPoint.price)<= TOLERANCE) &&
+				(this.quantity == otherPoint.quantity)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void setTolerance(double t) {
+		tolerance = t;
+	}
+
 }
-
-
-
-}
-
